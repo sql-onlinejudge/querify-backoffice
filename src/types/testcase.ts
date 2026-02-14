@@ -21,8 +21,9 @@ export interface Testcase {
 }
 
 export interface CreateTestcaseInput {
-  initSql?: string;
-  answer?: string;
+  initData?: InitData;
+  answerData: AnswerData;
+  isVisible: boolean;
 }
 
 export interface CreateTestcaseRequest {

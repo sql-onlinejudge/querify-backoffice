@@ -21,9 +21,24 @@ export const schemaMetadataSchema = z.object({
   tables: z.array(tableSchema).min(1, '테이블을 1개 이상 추가하세요'),
 });
 
+const initStatementSchema = z.object({
+  table: z.string().min(1, '테이블을 선택하세요'),
+  rows: z.array(z.record(z.string(), z.unknown())).min(1, '행을 1개 이상 추가하세요'),
+});
+
+const initDataSchema = z.object({
+  statements: z.array(initStatementSchema).min(1),
+});
+
+const answerDataSchema = z.object({
+  columns: z.array(z.string().min(1, '컬럼명을 입력하세요')).min(1, '컬럼을 1개 이상 추가하세요'),
+  rows: z.array(z.array(z.unknown())).min(1, '행을 1개 이상 추가하세요'),
+});
+
 export const testcaseInputSchema = z.object({
-  initSql: z.string().optional(),
-  answer: z.string().optional(),
+  initData: initDataSchema.optional(),
+  answerData: answerDataSchema,
+  isVisible: z.boolean(),
 });
 
 export const problemSchema = z.object({

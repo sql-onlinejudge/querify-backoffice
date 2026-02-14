@@ -11,22 +11,27 @@ import {
 } from 'antd';
 import { PlusOutlined, DeleteOutlined } from '@ant-design/icons';
 import { useNavigate } from 'react-router-dom';
-import { useForm, Controller } from 'react-hook-form';
+import { useForm, Controller, useWatch } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import MDEditor from '@uiw/react-md-editor';
-import CodeMirror from '@uiw/react-codemirror';
-import { sql } from '@codemirror/lang-sql';
 import { PageHeader } from '../../components/common/PageHeader';
 import { SchemaEditor } from '../../components/problem/SchemaEditor';
+import { InitDataEditor } from '../../components/problem/InitDataEditor';
+import { AnswerDataEditor } from '../../components/problem/AnswerDataEditor';
 import { useCreateProblem } from '../../hooks/useProblems';
 import { problemSchema, type ProblemFormData } from '../../utils/validation';
 import type { CreateTestcaseInput } from '../../types';
+
+const DEFAULT_TESTCASE: CreateTestcaseInput = {
+  answerData: { columns: [''], rows: [['']] },
+  isVisible: true,
+};
 
 export function ProblemCreatePage() {
   const navigate = useNavigate();
   const createMutation = useCreateProblem();
   const [testcases, setTestcases] = useState<CreateTestcaseInput[]>([
-    { initSql: '', answer: '' },
+    { ...DEFAULT_TESTCASE },
   ]);
 
   const {
@@ -43,12 +48,15 @@ export function ProblemCreatePage() {
       timeLimit: 5000,
       isOrderSensitive: false,
       schemaMetadata: { tables: [] },
-      testcases: [{ initSql: '', answer: '' }],
+      testcases: [{ ...DEFAULT_TESTCASE }],
     },
   });
 
+  const schemaMetadata = useWatch({ control, name: 'schemaMetadata' });
+  const tables = schemaMetadata?.tables || [];
+
   const addTestcase = () => {
-    const newTestcases = [...testcases, { initSql: '', answer: '' }];
+    const newTestcases = [...testcases, { ...DEFAULT_TESTCASE }];
     setTestcases(newTestcases);
     setValue('testcases', newTestcases);
   };
@@ -60,13 +68,9 @@ export function ProblemCreatePage() {
     setValue('testcases', newTestcases);
   };
 
-  const updateTestcase = (
-    index: number,
-    field: 'initSql' | 'answer',
-    value: string
-  ) => {
+  const updateTestcase = (index: number, updates: Partial<CreateTestcaseInput>) => {
     const newTestcases = testcases.map((tc, i) =>
-      i === index ? { ...tc, [field]: value } : tc
+      i === index ? { ...tc, ...updates } : tc
     );
     setTestcases(newTestcases);
     setValue('testcases', newTestcases);
@@ -202,31 +206,38 @@ export function ProblemCreatePage() {
               size="small"
               title={`테스트케이스 ${index + 1}`}
               extra={
-                testcases.length > 1 && (
-                  <Button
-                    type="text"
-                    danger
-                    icon={<DeleteOutlined />}
-                    onClick={() => removeTestcase(index)}
+                <Space>
+                  <span style={{ fontSize: 13 }}>공개</span>
+                  <Switch
+                    size="small"
+                    checked={testcase.isVisible}
+                    onChange={(checked) =>
+                      updateTestcase(index, { isVisible: checked })
+                    }
                   />
-                )
+                  {testcases.length > 1 && (
+                    <Button
+                      type="text"
+                      danger
+                      icon={<DeleteOutlined />}
+                      onClick={() => removeTestcase(index)}
+                    />
+                  )}
+                </Space>
               }
               style={{ marginBottom: 16 }}
             >
-              <Form.Item label="초기 SQL">
-                <CodeMirror
-                  value={testcase.initSql || ''}
-                  extensions={[sql()]}
-                  height="100px"
-                  onChange={(value) => updateTestcase(index, 'initSql', value)}
+              <Form.Item label="초기 데이터">
+                <InitDataEditor
+                  value={testcase.initData}
+                  onChange={(initData) => updateTestcase(index, { initData })}
+                  tables={tables}
                 />
               </Form.Item>
-              <Form.Item label="정답 SQL">
-                <CodeMirror
-                  value={testcase.answer || ''}
-                  extensions={[sql()]}
-                  height="100px"
-                  onChange={(value) => updateTestcase(index, 'answer', value)}
+              <Form.Item label="정답 데이터" required>
+                <AnswerDataEditor
+                  value={testcase.answerData}
+                  onChange={(answerData) => updateTestcase(index, { answerData })}
                 />
               </Form.Item>
             </Card>
