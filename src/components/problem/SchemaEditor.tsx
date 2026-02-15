@@ -21,7 +21,7 @@ export function SchemaEditor({ value, onChange }: SchemaEditorProps) {
   const addTable = () => {
     updateTables([
       ...tables,
-      { name: '', columns: [{ name: '', type: 'INT', nullable: true }] },
+      { name: '', columns: [{ name: '', type: 'INT', nullable: true, constraints: [] }] },
     ]);
   };
 
@@ -40,7 +40,7 @@ export function SchemaEditor({ value, onChange }: SchemaEditorProps) {
     updateTable(tableIndex, {
       columns: [
         ...table.columns,
-        { name: '', type: 'INT', nullable: true },
+        { name: '', type: 'INT', nullable: true, constraints: [] },
       ],
     });
   };
