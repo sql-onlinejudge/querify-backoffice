@@ -76,16 +76,49 @@ export function ProblemCreatePage() {
     setValue('testcases', newTestcases);
   };
 
-  const onSubmit = (data: ProblemFormData) => {
-    createMutation.mutate(
-      {
-        ...data,
-        difficulty: data.difficulty as 1 | 2 | 3 | 4 | 5,
-      },
-      {
-        onSuccess: () => navigate('/problems'),
+  const sanitizeValue = (value: unknown): unknown => {
+    if (value === '' || value === null || value === undefined) {
+      return null;
+    }
+    if (typeof value === 'string') {
+      const num = Number(value);
+      if (!isNaN(num) && value.trim() !== '') {
+        return num;
       }
-    );
+    }
+    return value;
+  };
+
+  const onSubmit = (data: ProblemFormData) => {
+    const sanitizedData = {
+      ...data,
+      difficulty: data.difficulty as 1 | 2 | 3 | 4 | 5,
+      testcases: data.testcases.map(tc => ({
+        ...tc,
+        answerData: {
+          columns: tc.answerData.columns,
+          rows: tc.answerData.rows.map(row =>
+            row.map(cell => sanitizeValue(cell))
+          )
+        },
+        initData: tc.initData ? {
+          statements: tc.initData.statements.map(stmt => ({
+            table: stmt.table,
+            rows: stmt.rows.map(row => {
+              const sanitized: Record<string, unknown> = {};
+              for (const [key, value] of Object.entries(row)) {
+                sanitized[key] = sanitizeValue(value);
+              }
+              return sanitized;
+            })
+          }))
+        } : undefined
+      }))
+    };
+
+    createMutation.mutate(sanitizedData, {
+      onSuccess: () => navigate('/problems'),
+    });
   };
 
   return (
