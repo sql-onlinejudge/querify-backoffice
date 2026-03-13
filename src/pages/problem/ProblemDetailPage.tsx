@@ -2,13 +2,9 @@ import { useState, useEffect } from 'react';
 import {
   Form,
   Input,
-  Select,
-  InputNumber,
-  Switch,
   Button,
   Card,
   Tabs,
-  Space,
   Statistic,
   Row,
   Col,
@@ -22,7 +18,6 @@ import MDEditor from '@uiw/react-md-editor';
 import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip } from 'recharts';
 import { PageHeader } from '../../components/common/PageHeader';
 import { LoadingSpinner } from '../../components/common/LoadingSpinner';
-import { SchemaEditor } from '../../components/problem/SchemaEditor';
 import { TestcaseList } from '../../components/testcase/TestcaseList';
 import { TestcaseModal } from '../../components/testcase/TestcaseModal';
 import { showConfirmModal } from '../../components/common/ConfirmModal';
@@ -75,10 +70,6 @@ export function ProblemDetailPage() {
       reset({
         title: problem.title,
         description: problem.description,
-        difficulty: problem.difficulty,
-        timeLimit: problem.timeLimit,
-        isOrderSensitive: problem.isOrderSensitive,
-        schemaMetadata: problem.schemaMetadata,
       });
     }
   }, [problem, reset]);
@@ -92,10 +83,7 @@ export function ProblemDetailPage() {
   }
 
   const onSubmit = (data: UpdateProblemFormData) => {
-    updateMutation.mutate({
-      ...data,
-      difficulty: data.difficulty as 1 | 2 | 3 | 4 | 5,
-    });
+    updateMutation.mutate(data);
   };
 
   const handleDelete = () => {
@@ -161,51 +149,6 @@ export function ProblemDetailPage() {
             />
           </Form.Item>
 
-          <Space size="large" wrap>
-            <Form.Item label="난이도" required>
-              <Controller
-                name="difficulty"
-                control={control}
-                defaultValue={problem.difficulty}
-                render={({ field }) => (
-                  <Select
-                    {...field}
-                    style={{ width: 120 }}
-                    options={[
-                      { label: 'Level 1', value: 1 },
-                      { label: 'Level 2', value: 2 },
-                      { label: 'Level 3', value: 3 },
-                      { label: 'Level 4', value: 4 },
-                      { label: 'Level 5', value: 5 },
-                    ]}
-                  />
-                )}
-              />
-            </Form.Item>
-
-            <Form.Item label="시간 제한 (ms)" required>
-              <Controller
-                name="timeLimit"
-                control={control}
-                defaultValue={problem.timeLimit}
-                render={({ field }) => (
-                  <InputNumber {...field} min={1000} max={60000} step={1000} />
-                )}
-              />
-            </Form.Item>
-
-            <Form.Item label="결과 순서 민감">
-              <Controller
-                name="isOrderSensitive"
-                control={control}
-                defaultValue={problem.isOrderSensitive}
-                render={({ field }) => (
-                  <Switch checked={field.value} onChange={field.onChange} />
-                )}
-              />
-            </Form.Item>
-          </Space>
-
           <Form.Item
             label="문제 설명"
             required
@@ -222,17 +165,6 @@ export function ProblemDetailPage() {
                   onChange={(value) => field.onChange(value || '')}
                   height={300}
                 />
-              )}
-            />
-          </Form.Item>
-
-          <Form.Item label="스키마 정의">
-            <Controller
-              name="schemaMetadata"
-              control={control}
-              defaultValue={problem.schemaMetadata}
-              render={({ field }) => (
-                <SchemaEditor value={field.value} onChange={field.onChange} />
               )}
             />
           </Form.Item>

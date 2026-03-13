@@ -54,10 +54,6 @@ export const problemSchema = z.object({
 export const updateProblemSchema = z.object({
   title: z.string().min(1, '제목을 입력하세요'),
   description: z.string().min(1, '문제 설명을 입력하세요'),
-  difficulty: z.number().min(1).max(5),
-  timeLimit: z.number().min(1000).max(60000),
-  isOrderSensitive: z.boolean(),
-  schemaMetadata: schemaMetadataSchema,
 });
 
 export type LoginFormData = z.infer<typeof loginSchema>;

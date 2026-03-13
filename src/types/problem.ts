@@ -57,10 +57,6 @@ export interface CreateProblemRequest {
 export interface UpdateProblemRequest {
   title?: string;
   description?: string;
-  schemaMetadata?: SchemaMetadata;
-  difficulty?: 1 | 2 | 3 | 4 | 5;
-  timeLimit?: number;
-  isOrderSensitive?: boolean;
 }
 
 export interface ProblemFilters {
