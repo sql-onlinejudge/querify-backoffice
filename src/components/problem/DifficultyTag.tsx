@@ -1,11 +1,17 @@
 import { Tag } from 'antd';
-import { DIFFICULTY_CONFIG } from '../../utils/constants';
 
 interface DifficultyTagProps {
-  level: 1 | 2 | 3 | 4 | 5;
+  level: number;
+}
+
+function getColor(level: number): string {
+  if (level <= 5) return 'green';
+  if (level <= 8) return 'cyan';
+  if (level <= 11) return 'orange';
+  if (level <= 13) return 'volcano';
+  return 'red';
 }
 
 export function DifficultyTag({ level }: DifficultyTagProps) {
-  const config = DIFFICULTY_CONFIG[level];
-  return <Tag color={config.color}>{config.label}</Tag>;
+  return <Tag color={getColor(level)}>Lv.{level}</Tag>;
 }

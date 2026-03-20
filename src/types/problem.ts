@@ -24,7 +24,7 @@ export interface Problem {
   description: string;
   schemaSql: string;
   schemaMetadata: SchemaMetadata;
-  difficulty: 1 | 2 | 3 | 4 | 5;
+  difficulty: number;
   timeLimit: number;
   isOrderSensitive: boolean;
   solvedCount: number;
@@ -37,7 +37,7 @@ export interface Problem {
 export interface ProblemListItem {
   id: number;
   title: string;
-  difficulty: 1 | 2 | 3 | 4 | 5;
+  difficulty: number;
   solvedCount: number;
   submissionCount: number;
   trialStatus: TrialStatus;
@@ -48,7 +48,7 @@ export interface CreateProblemRequest {
   title: string;
   description: string;
   schemaMetadata: SchemaMetadata;
-  difficulty: 1 | 2 | 3 | 4 | 5;
+  difficulty: number;
   timeLimit: number;
   isOrderSensitive: boolean;
   testcases: CreateTestcaseInput[];
