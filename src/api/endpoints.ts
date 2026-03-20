@@ -17,4 +17,7 @@ export const ENDPOINTS = {
     byId: (problemId: number, submissionId: number) =>
       `/problems/${problemId}/submissions/${submissionId}`,
   },
+  admin: {
+    reindex: '/admin/problems/reindex',
+  },
 } as const;

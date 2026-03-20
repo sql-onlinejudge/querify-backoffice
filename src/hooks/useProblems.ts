@@ -1,6 +1,6 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { message } from 'antd';
-import { problemsApi } from '../api/problems';
+import { problemsApi, type ReindexResponse } from '../api/problems';
 import type {
   CreateProblemRequest,
   PaginationParams,
@@ -74,6 +74,22 @@ export function useDeleteProblem() {
     },
     onError: () => {
       message.error('문제 삭제에 실패했습니다');
+    },
+  });
+}
+
+export function useReindexProblems() {
+  return useMutation<ReindexResponse, Error>({
+    mutationFn: () => problemsApi.reindex(),
+    onSuccess: (data) => {
+      if (data.success) {
+        message.success(data.message ?? '재인덱싱이 완료되었습니다');
+      } else {
+        message.error(data.error ?? '재인덱싱에 실패했습니다');
+      }
+    },
+    onError: () => {
+      message.error('재인덱싱에 실패했습니다');
     },
   });
 }

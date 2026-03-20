@@ -10,6 +10,14 @@ import type {
   UpdateProblemRequest,
 } from '../types';
 
+export interface ReindexResponse {
+  success: boolean;
+  indexed?: number;
+  message?: string;
+  error?: string;
+  type?: string;
+}
+
 export const problemsApi = {
   getAll: async (
     params: PaginationParams & ProblemFilters
@@ -36,5 +44,10 @@ export const problemsApi = {
 
   delete: async (id: number): Promise<void> => {
     await apiClient.delete(ENDPOINTS.problems.byId(id));
+  },
+
+  reindex: async (): Promise<ReindexResponse> => {
+    const response = await apiClient.post<ReindexResponse>(ENDPOINTS.admin.reindex);
+    return response.data;
   },
 };
