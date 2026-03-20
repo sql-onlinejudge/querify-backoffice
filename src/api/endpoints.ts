@@ -20,4 +20,7 @@ export const ENDPOINTS = {
   admin: {
     reindex: '/admin/problems/reindex',
   },
+  users: {
+    me: '/users/me',
+  },
 } as const;

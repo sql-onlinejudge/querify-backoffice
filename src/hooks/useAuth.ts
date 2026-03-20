@@ -11,13 +11,11 @@ export function useLogin() {
 
   return useMutation({
     mutationFn: (data: AdminLoginRequest) => authApi.login(data),
-    onSuccess: (response) => {
-      console.log('Login response:', response);
-      login(response.accessToken);
+    onSuccess: () => {
+      login();
       navigate('/');
     },
-    onError: (error) => {
-      console.error('Login error:', error);
+    onError: () => {
       message.error('로그인에 실패했습니다');
     },
   });

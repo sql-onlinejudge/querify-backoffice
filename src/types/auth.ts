@@ -4,13 +4,11 @@ export interface AdminLoginRequest {
 }
 
 export interface AdminLoginResponse {
-  accessToken: string;
-  refreshToken?: string;
+  success?: boolean;
 }
 
 export interface AuthState {
   isAuthenticated: boolean;
-  accessToken: string | null;
-  login: (token: string) => void;
+  login: () => void;
   logout: () => void;
 }
