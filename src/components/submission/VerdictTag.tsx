@@ -9,5 +9,6 @@ interface VerdictTagProps {
 export function VerdictTag({ verdict }: VerdictTagProps) {
   if (!verdict) return <Tag>-</Tag>;
   const config = VERDICT_CONFIG[verdict];
+  if (!config) return <Tag>{verdict}</Tag>;
   return <Tag color={config.color}>{config.label}</Tag>;
 }

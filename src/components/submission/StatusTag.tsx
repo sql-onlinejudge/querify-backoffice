@@ -8,5 +8,6 @@ interface StatusTagProps {
 
 export function StatusTag({ status }: StatusTagProps) {
   const config = STATUS_CONFIG[status];
+  if (!config) return <Tag>{status}</Tag>;
   return <Tag color={config.color}>{config.label}</Tag>;
 }
