@@ -1,10 +1,10 @@
 import { useState } from 'react';
 import { Button, Input, Select, Space } from 'antd';
-import { PlusOutlined } from '@ant-design/icons';
+import { PlusOutlined, ReloadOutlined } from '@ant-design/icons';
 import { useNavigate } from 'react-router-dom';
 import { PageHeader } from '../../components/common/PageHeader';
 import { ProblemTable } from '../../components/problem/ProblemTable';
-import { useProblems, useDeleteProblem } from '../../hooks/useProblems';
+import { useProblems, useDeleteProblem, useReindexProblems } from '../../hooks/useProblems';
 
 const { Search } = Input;
 
@@ -24,6 +24,7 @@ export function ProblemListPage() {
   });
 
   const deleteMutation = useDeleteProblem();
+  const reindexMutation = useReindexProblems();
 
   const handlePaginationChange = (newPage: number, newPageSize: number) => {
     setPage(newPage - 1);
@@ -45,13 +46,22 @@ export function ProblemListPage() {
       <PageHeader
         title="문제 관리"
         extra={
-          <Button
-            type="primary"
-            icon={<PlusOutlined />}
-            onClick={() => navigate('/problems/create')}
-          >
-            문제 생성
-          </Button>
+          <Space>
+            <Button
+              icon={<ReloadOutlined />}
+              loading={reindexMutation.isPending}
+              onClick={() => reindexMutation.mutate()}
+            >
+              재인덱싱
+            </Button>
+            <Button
+              type="primary"
+              icon={<PlusOutlined />}
+              onClick={() => navigate('/problems/create')}
+            >
+              문제 생성
+            </Button>
+          </Space>
         }
       />
 
