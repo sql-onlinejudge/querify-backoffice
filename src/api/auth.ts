@@ -10,8 +10,4 @@ export const authApi = {
     );
     return response.data;
   },
-
-  me: async (): Promise<void> => {
-    await apiClient.get(ENDPOINTS.users.me);
-  },
 };
