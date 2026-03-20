@@ -13,7 +13,6 @@ apiClient.interceptors.request.use((config) => {
   if (token) {
     config.headers.Authorization = `Bearer ${token}`;
   }
-  config.headers['X-User-Id'] = '00000000-0000-0000-0000-000000000000';
   return config;
 });
 
